@@ -57,8 +57,8 @@
             <div class="card-header fw-semibold">
                 <i class="bi bi-pie-chart me-2 text-primary"></i>Status Lamaran
             </div>
-            <div class="card-body">
-                <canvas id="statusChart" height="220"></canvas>
+            <div class="card-body" style="position: relative; height: 250px; width: 100%;">
+                <canvas id="statusChart"></canvas>
             </div>
         </div>
     </div>
@@ -67,8 +67,8 @@
             <div class="card-header fw-semibold">
                 <i class="bi bi-bar-chart me-2 text-primary"></i>Lamaran per Bulan
             </div>
-            <div class="card-body">
-                <canvas id="bulanChart" height="220"></canvas>
+            <div class="card-body" style="position: relative; height: 250px; width: 100%;">
+                <canvas id="bulanChart"></canvas>
             </div>
         </div>
     </div>
@@ -140,7 +140,7 @@ new Chart(document.getElementById('statusChart'), {
             backgroundColor: statusData.map(d => statusColors[d.status] || '#999'),
         }]
     },
-    options: { plugins: { legend: { position: 'bottom' } }, cutout: '60%' }
+    options: { plugins: { legend: { position: 'bottom' } }, cutout: '60%', maintainAspectRatio: false }
 });
 
 // Bulan Chart (Bar)
@@ -159,7 +159,7 @@ new Chart(document.getElementById('bulanChart'), {
             borderRadius: 6,
         }]
     },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } }, maintainAspectRatio: false }
 });
 </script>
 @endpush

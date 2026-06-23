@@ -27,7 +27,11 @@
                     @forelse($cvs as $cv)
                         <tr>
                             <td class="fw-semibold">
-                                <i class="bi bi-file-pdf text-danger me-1"></i> {{ $cv->name }}
+                                @php
+                                    $ext = pathinfo($cv->file_path, PATHINFO_EXTENSION);
+                                    $iconClass = $ext === 'pdf' ? 'bi-file-pdf text-danger' : 'bi-file-word text-primary';
+                                @endphp
+                                <i class="bi {{ $iconClass }} me-1"></i> {{ $cv->name }}
                             </td>
                             <td>{{ $cv->version ?: '-' }}</td>
                             <td class="text-truncate" style="max-width: 200px;">{{ $cv->description ?: '-' }}</td>
@@ -43,14 +47,14 @@
                             </td>
                             <td class="text-muted small">{{ $cv->created_at->format('d M Y') }}</td>
                             <td class="text-end">
-                                <div class="btn-group">
+                                <div class="d-flex gap-1 justify-content-end">
                                     <a href="{{ route('cvs.download', $cv) }}" class="btn btn-sm btn-outline-primary" title="Download">
                                         <i class="bi bi-download"></i>
                                     </a>
                                     <a href="{{ route('cvs.edit', $cv) }}" class="btn btn-sm btn-outline-secondary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('cvs.destroy', $cv) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus CV ini?')">
+                                    <form action="{{ route('cvs.destroy', $cv) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus CV ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger" title="Hapus">

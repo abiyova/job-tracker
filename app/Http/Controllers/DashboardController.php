@@ -47,8 +47,9 @@ class DashboardController extends Controller
             ->groupBy('status')->get();
 
         $lamaranPerBulan = $user->jobs()
-            ->select(DB::raw('MONTH(created_at) as bulan'), DB::raw('COUNT(*) as total'))
-            ->whereYear('created_at', date('Y'))
+            ->select(DB::raw('MONTH(apply_date) as bulan'), DB::raw('COUNT(*) as total'))
+            ->whereNotNull('apply_date')
+            ->whereYear('apply_date', date('Y'))
             ->groupBy('bulan')->orderBy('bulan')->get();
 
         return view('dashboard.user', compact('stats','recentJobs','lamaranPerStatus','lamaranPerBulan'));

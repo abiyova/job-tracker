@@ -28,9 +28,9 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">File CV (PDF) <span class="text-danger">*</span></label>
-                        <input type="file" name="file" class="form-control @error('file') is-invalid @enderror" accept=".pdf" required>
-                        <div class="form-text">Maksimal 5MB, format wajib PDF.</div>
+                        <label class="form-label">File CV (PDF/Word) <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control @error('file') is-invalid @enderror" accept=".pdf,.doc,.docx" required>
+                        <div class="form-text">Maksimal 5MB, format wajib PDF, DOC, atau DOCX.</div>
                         @error('file')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 

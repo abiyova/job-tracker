@@ -30,3 +30,4 @@ Homestead.yaml
 Thumbs.db
 backup/
 database_backup/
+*.md

@@ -37,6 +37,17 @@
                         @endif
                     </div>
                     <div class="mb-3">
+                        <label class="form-label fw-medium">Jenis Font *</label>
+                        <select name="font_family" class="form-select mb-2" id="fontFamilySelect" required>
+                            <option value="Times New Roman" selected>Times New Roman</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Calibri">Calibri</option>
+                            <option value="Helvetica">Helvetica</option>
+                            <option value="Tahoma">Tahoma</option>
+                            <option value="Verdana">Verdana</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label fw-medium">Ukuran Font *</label>
                         <select name="font_size" class="form-select" id="fontSizeSelect" required>
                             <option value="10">10 pt</option>
@@ -100,12 +111,24 @@
 @endsection
 @push('scripts')
 <script>
-document.getElementById('fontSizeSelect').addEventListener('change', function() {
-    const size = this.value;
+function updateFontPreview() {
+    const family = document.getElementById('fontFamilySelect').value;
+    const size = document.getElementById('fontSizeSelect').value;
     const txtArea = document.getElementById('previewContent');
+    
+    // Update textarea style
+    txtArea.style.fontFamily = family + ', sans-serif';
+    if(family === 'Times New Roman') {
+        txtArea.style.fontFamily = "'Times New Roman', Times, serif";
+    }
     txtArea.style.fontSize = size + 'pt';
-    document.getElementById('fontBadge').innerText = 'Times New Roman, ' + size + 'pt';
-});
+    
+    // Update badge text
+    document.getElementById('fontBadge').innerText = family + ', ' + size + 'pt';
+}
+
+document.getElementById('fontSizeSelect').addEventListener('change', updateFontPreview);
+document.getElementById('fontFamilySelect').addEventListener('change', updateFontPreview);
 
 document.getElementById('lineSpacingSelect').addEventListener('change', function() {
     const customInput = document.getElementById('customLineSpacing');
@@ -145,10 +168,8 @@ function previewLetter() {
             txtArea.value = data.content;
             txtArea.style.display = 'block';
             
-            // Set font size to current selection
-            const size = document.getElementById('fontSizeSelect').value;
-            txtArea.style.fontSize = size + 'pt';
-            document.getElementById('fontBadge').innerText = 'Times New Roman, ' + size + 'pt';
+            // Set font size and family to current selection
+            updateFontPreview();
         })
         .catch(err => {
             placeholder.innerHTML = `<p class="text-center text-danger py-5"><i class="bi bi-exclamation-triangle"></i> ${err.message}</p>`;

@@ -20,6 +20,7 @@ class LetterController extends Controller
         $request->validate([
             'job_id'         => 'required|exists:job_applications,id',
             'template_id'    => 'required|exists:letter_templates,id',
+            'font_family'    => 'required|string',
             'font_size'      => 'required|integer|between:10,24',
             'line_spacing'   => 'required|string',
             'edited_content' => 'nullable|string',
@@ -34,6 +35,7 @@ class LetterController extends Controller
         abort_if(!$profile, 400, 'Lengkapi profil Anda terlebih dahulu!');
 
         $fontSize = (int) $request->font_size;
+        $fontFamily = $request->font_family;
         $editedContent = $request->filled('edited_content') ? $request->edited_content : null;
 
         $lineSpacing = $request->input('line_spacing');
@@ -48,7 +50,7 @@ class LetterController extends Controller
             $lineSpacing = 1.0;
         }
 
-        $path = $service->generateDocx($job, $template, $profile, $fontSize, $editedContent, $lineSpacing);
+        $path = $service->generateDocx($job, $template, $profile, $fontSize, $editedContent, $lineSpacing, $fontFamily);
 
         return \Storage::download($path);
     }

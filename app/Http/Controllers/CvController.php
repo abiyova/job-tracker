@@ -25,7 +25,7 @@ class CvController extends Controller
             'name'        => 'required|string|max:100',
             'version'     => 'nullable|string|max:20',
             'description' => 'nullable|string',
-            'file'        => 'required|file|mimes:pdf|max:5120',
+            'file'        => 'required|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
         $path = $request->file('file')->store('cvs/'.auth()->id(), 'local');
@@ -49,7 +49,8 @@ class CvController extends Controller
     public function download(Cv $cv)
     {
         abort_if($cv->user_id !== auth()->id(), 403);
-        return Storage::download($cv->file_path, $cv->name.'.pdf');
+        $extension = pathinfo($cv->file_path, PATHINFO_EXTENSION) ?: 'pdf';
+        return Storage::download($cv->file_path, $cv->name.'.'.$extension);
     }
 
     public function setDefault(Cv $cv)
@@ -74,7 +75,7 @@ class CvController extends Controller
             'name'        => 'required|string|max:100',
             'version'     => 'nullable|string|max:20',
             'description' => 'nullable|string',
-            'file'        => 'nullable|file|mimes:pdf|max:5120',
+            'file'        => 'nullable|file|mimes:pdf,doc,docx|max:5120',
         ]);
 
         if ($request->boolean('is_default')) {

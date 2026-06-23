@@ -69,14 +69,14 @@ class LetterGeneratorService
         return str_replace(array_keys($map), array_values($map), $content);
     }
 
-    public function generateDocx(Job $job, LetterTemplate $template, ApplicantProfile $profile, int $fontSize = 12, ?string $editedContent = null, float $lineSpacing = 1.5): string
+    public function generateDocx(Job $job, LetterTemplate $template, ApplicantProfile $profile, int $fontSize = 12, ?string $editedContent = null, float $lineSpacing = 1.5, string $fontFamily = 'Times New Roman'): string
     {
         $content  = $editedContent !== null ? $editedContent : $this->replacePlaceholders($template->content, $job, $profile);
         $fileName = 'Surat_Lamaran_' . str_replace(' ', '_', $job->company_name) . '.docx';
         $filePath = 'letters/' . auth()->id() . '/' . $fileName;
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
-        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontName($fontFamily);
         $phpWord->setDefaultFontSize($fontSize);
         
         // Remove default paragraph spacing after
