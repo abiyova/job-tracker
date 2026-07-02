@@ -27,11 +27,10 @@
                     @forelse($cvs as $cv)
                         <tr>
                             <td class="fw-semibold">
-                                @php
-                                    $ext = pathinfo($cv->file_path, PATHINFO_EXTENSION);
-                                    $iconClass = $ext === 'pdf' ? 'bi-file-pdf text-danger' : 'bi-file-word text-primary';
-                                @endphp
-                                <i class="bi {{ $iconClass }} me-1"></i> {{ $cv->name }}
+                                <i class="bi bi-file-pdf text-danger me-1"></i> {{ $cv->name }}
+                                @if($cv->file_path_docx)
+                                    <span class="badge bg-primary ms-1" style="font-size: 0.6rem;">DOCX</span>
+                                @endif
                             </td>
                             <td>{{ $cv->version ?: '-' }}</td>
                             <td class="text-truncate" style="max-width: 200px;">{{ $cv->description ?: '-' }}</td>
@@ -48,9 +47,17 @@
                             <td class="text-muted small">{{ $cv->created_at->format('d M Y') }}</td>
                             <td class="text-end">
                                 <div class="d-flex gap-1 justify-content-end">
-                                    <a href="{{ route('cvs.download', $cv) }}" class="btn btn-sm btn-outline-primary" title="Download">
-                                        <i class="bi bi-download"></i>
+                                    <a href="{{ route('cvs.show', $cv) }}" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat PDF">
+                                        <i class="bi bi-eye"></i>
                                     </a>
+                                    <a href="{{ route('cvs.download', ['cv' => $cv, 'type' => 'pdf']) }}" class="btn btn-sm btn-outline-danger" title="Download PDF">
+                                        <i class="bi bi-file-pdf"></i>
+                                    </a>
+                                    @if($cv->file_path_docx)
+                                    <a href="{{ route('cvs.download', ['cv' => $cv, 'type' => 'docx']) }}" class="btn btn-sm btn-outline-primary" title="Download Word">
+                                        <i class="bi bi-file-word"></i>
+                                    </a>
+                                    @endif
                                     <a href="{{ route('cvs.edit', $cv) }}" class="btn btn-sm btn-outline-secondary" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>

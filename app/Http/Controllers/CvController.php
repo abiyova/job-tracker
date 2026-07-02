@@ -25,32 +25,59 @@ class CvController extends Controller
             'name'        => 'required|string|max:100',
             'version'     => 'nullable|string|max:20',
             'description' => 'nullable|string',
-            'file'        => 'required|file|mimes:pdf,doc,docx|max:5120',
+            'file_pdf'    => 'required|file|mimes:pdf|max:5120',
+            'file_docx'   => 'nullable|file|mimes:doc,docx|max:5120',
         ]);
 
-        $path = $request->file('file')->store('cvs/'.auth()->id(), 'local');
+        $path_pdf = $request->file('file_pdf')->store('cvs/'.auth()->id(), 'local');
+        $path_docx = null;
+        if ($request->hasFile('file_docx')) {
+            $path_docx = $request->file('file_docx')->store('cvs/'.auth()->id(), 'local');
+        }
 
-        // Jika set default, reset yang lain
         if ($request->boolean('is_default')) {
             Cv::where('user_id', auth()->id())->update(['is_default' => false]);
         }
 
         auth()->user()->cvs()->create([
-            'name'        => $request->name,
-            'description' => $request->description,
-            'version'     => $request->version,
-            'file_path'   => $path,
-            'is_default'  => $request->boolean('is_default'),
+            'name'           => $request->name,
+            'description'    => $request->description,
+            'version'        => $request->version,
+            'file_path'      => $path_pdf,
+            'file_path_docx' => $path_docx,
+            'is_default'     => $request->boolean('is_default'),
         ]);
 
         return redirect()->route('cvs.index')->with('success', 'CV berhasil diupload!');
     }
 
-    public function download(Cv $cv)
+    public function download(Request $request, Cv $cv)
     {
         abort_if($cv->user_id !== auth()->id(), 403);
+        
+        if ($request->query('type') === 'docx' && $cv->file_path_docx) {
+            $extension = pathinfo($cv->file_path_docx, PATHINFO_EXTENSION) ?: 'docx';
+            return Storage::download($cv->file_path_docx, $cv->name.'.'.$extension);
+        }
+        
         $extension = pathinfo($cv->file_path, PATHINFO_EXTENSION) ?: 'pdf';
         return Storage::download($cv->file_path, $cv->name.'.'.$extension);
+    }
+
+    public function show(Cv $cv)
+    {
+        abort_if($cv->user_id !== auth()->id(), 403);
+        
+        if (!Storage::disk('local')->exists($cv->file_path)) {
+            abort(404, 'File CV PDF tidak ditemukan.');
+        }
+
+        $file = Storage::disk('local')->get($cv->file_path);
+        $mimeType = Storage::disk('local')->mimeType($cv->file_path);
+        
+        return response($file, 200)
+            ->header('Content-Type', $mimeType)
+            ->header('Content-Disposition', 'inline; filename="' . $cv->name . '.pdf"');
     }
 
     public function setDefault(Cv $cv)
@@ -75,7 +102,8 @@ class CvController extends Controller
             'name'        => 'required|string|max:100',
             'version'     => 'nullable|string|max:20',
             'description' => 'nullable|string',
-            'file'        => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'file_pdf'    => 'nullable|file|mimes:pdf|max:5120',
+            'file_docx'   => 'nullable|file|mimes:doc,docx|max:5120',
         ]);
 
         if ($request->boolean('is_default')) {
@@ -89,9 +117,14 @@ class CvController extends Controller
             'is_default'  => $request->boolean('is_default'),
         ];
 
-        if ($request->hasFile('file')) {
-            Storage::disk('local')->delete($cv->file_path);
-            $data['file_path'] = $request->file('file')->store('cvs/'.auth()->id(), 'local');
+        if ($request->hasFile('file_pdf')) {
+            if ($cv->file_path) Storage::disk('local')->delete($cv->file_path);
+            $data['file_path'] = $request->file('file_pdf')->store('cvs/'.auth()->id(), 'local');
+        }
+        
+        if ($request->hasFile('file_docx')) {
+            if ($cv->file_path_docx) Storage::disk('local')->delete($cv->file_path_docx);
+            $data['file_path_docx'] = $request->file('file_docx')->store('cvs/'.auth()->id(), 'local');
         }
 
         $cv->update($data);
@@ -103,7 +136,8 @@ class CvController extends Controller
     {
         abort_if($cv->user_id !== auth()->id(), 403);
         
-        Storage::disk('local')->delete($cv->file_path);
+        if ($cv->file_path) Storage::disk('local')->delete($cv->file_path);
+        if ($cv->file_path_docx) Storage::disk('local')->delete($cv->file_path_docx);
         $cv->delete();
 
         return redirect()->route('cvs.index')->with('success', 'CV berhasil dihapus.');

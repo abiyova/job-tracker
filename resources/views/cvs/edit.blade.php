@@ -29,10 +29,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">File CV Baru (PDF/Word)</label>
-                        <input type="file" name="file" class="form-control @error('file') is-invalid @enderror" accept=".pdf,.doc,.docx">
-                        <div class="form-text">Biarkan kosong jika tidak ingin mengganti file. Maksimal 5MB, format PDF/Word.</div>
-                        @error('file')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label class="form-label">File CV PDF Baru</label>
+                        <input type="file" name="file_pdf" class="form-control @error('file_pdf') is-invalid @enderror" accept=".pdf">
+                        <div class="form-text">Biarkan kosong jika tidak ingin mengganti file PDF. Maksimal 5MB, format PDF.</div>
+                        @error('file_pdf')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">File CV Word Baru (Opsional)</label>
+                        <input type="file" name="file_docx" class="form-control @error('file_docx') is-invalid @enderror" accept=".doc,.docx">
+                        <div class="form-text">Biarkan kosong jika tidak ingin mengganti file Word. Maksimal 5MB, format DOC atau DOCX.</div>
+                        @error('file_docx')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">

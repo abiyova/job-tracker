@@ -28,10 +28,17 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">File CV (PDF/Word) <span class="text-danger">*</span></label>
-                        <input type="file" name="file" class="form-control @error('file') is-invalid @enderror" accept=".pdf,.doc,.docx" required>
-                        <div class="form-text">Maksimal 5MB, format wajib PDF, DOC, atau DOCX.</div>
-                        @error('file')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <label class="form-label">File CV PDF <span class="text-danger">*</span></label>
+                        <input type="file" name="file_pdf" class="form-control @error('file_pdf') is-invalid @enderror" accept=".pdf" required>
+                        <div class="form-text">Maksimal 5MB, format wajib PDF. Digunakan untuk preview di browser.</div>
+                        @error('file_pdf')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">File CV Word (Opsional)</label>
+                        <input type="file" name="file_docx" class="form-control @error('file_docx') is-invalid @enderror" accept=".doc,.docx">
+                        <div class="form-text">Maksimal 5MB, format DOC atau DOCX. Digunakan untuk diunduh dan diedit manual.</div>
+                        @error('file_docx')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="mb-3">

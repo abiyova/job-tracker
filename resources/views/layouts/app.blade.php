@@ -8,7 +8,9 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-
+<!-- SweetAlert2 -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -267,6 +269,56 @@
         } else {
             document.getElementById('sidebar').classList.toggle('collapsed');
             document.getElementById('main-content').classList.toggle('expanded');
+        }
+    });
+
+    // Upgrade native confirm() to SweetAlert2 for all forms and elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle onsubmit in forms
+        const deleteForms = document.querySelectorAll('form[onsubmit*="confirm"]');
+        deleteForms.forEach(form => {
+            const match = form.getAttribute('onsubmit').match(/confirm\('([^']+)'\)/);
+            const message = match ? match[1] : 'Apakah Anda yakin ingin melakukan tindakan ini?';
+            form.removeAttribute('onsubmit');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showSweetAlert(message, () => form.submit());
+            });
+        });
+
+        // Handle onclick in buttons or links
+        const confirmElements = document.querySelectorAll('[onclick*="confirm"]');
+        confirmElements.forEach(el => {
+            const match = el.getAttribute('onclick').match(/confirm\('([^']+)'\)/);
+            const message = match ? match[1] : 'Apakah Anda yakin ingin melakukan tindakan ini?';
+            el.removeAttribute('onclick');
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSweetAlert(message, () => {
+                    if (el.tagName === 'A') window.location.href = el.href;
+                    else if (el.closest('form')) el.closest('form').submit();
+                });
+            });
+        });
+
+        function showSweetAlert(message, onConfirm) {
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="bi bi-check-lg me-1"></i> Ya, Lanjutkan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-4 border-0 shadow-lg',
+                    confirmButton: 'btn btn-danger px-4 py-2 mx-2 rounded-3',
+                    cancelButton: 'btn btn-light px-4 py-2 mx-2 rounded-3 border'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) onConfirm();
+            });
         }
     });
 </script>

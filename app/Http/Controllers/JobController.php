@@ -27,7 +27,7 @@ class JobController extends Controller
             $query->where('source', $source);
         }
         // Sort
-        $sort = 'apply_date';
+        $sort = 'created_at';
         $dir  = $request->dir  ?? 'desc';
         $query->orderBy($sort, $dir);
 

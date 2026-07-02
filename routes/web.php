@@ -62,7 +62,7 @@ Route::middleware(['auth','force.change.password'])->group(function () {
              ->name('status-histories.destroy-mass');
 
         // CV
-        Route::resource('cvs', CvController::class)->except(['show']);
+        Route::resource('cvs', CvController::class);
         Route::get('cvs/{cv}/download', [CvController::class, 'download'])->name('cvs.download');
         Route::post('cvs/{cv}/default', [CvController::class, 'setDefault'])->name('cvs.set-default');
 
