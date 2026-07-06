@@ -9,10 +9,10 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="fw-semibold"><i class="bi bi-info-circle me-2 text-primary"></i>Informasi Lamaran</span>
                 <div>
-                    <a href="{{ route('jobs.edit', $job) }}" class="btn btn-sm btn-outline-primary me-2">
+                    <a href="{{ route('jobs.edit', $job) }}" class="btn-modern btn-outline-modern me-2">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
-                    <a href="{{ route('jobs.index') }}" class="btn btn-sm btn-outline-secondary">
+                    <a href="{{ route('jobs.index') }}" class="btn-modern btn-outline-modern">
                         <i class="bi bi-arrow-left"></i> Kembali
                     </a>
                 </div>

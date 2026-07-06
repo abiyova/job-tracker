@@ -26,7 +26,7 @@
     <style>
         :root {
             --sidebar-width: 260px;
-            --primary: #4361ee;
+            --primary: #6366f1;
             --sidebar-bg: #1e2a3b;
             --sidebar-text: #a8b4c8;
             --sidebar-active: #4361ee;
@@ -123,6 +123,62 @@
         .badge-diterima      { background: #20c997; }
         .badge-perlu_follow_up { background: #ffc107; color: #000; }
         .badge-tidak_direspon  { background: #6c757d; color: #fff; }
+
+        /* ── Modern Buttons ───────────────────────── */
+        .btn-modern {
+            font-weight: 600;
+            font-size: .875rem;
+            padding: .625rem 1.25rem;
+            border-radius: .625rem;
+            border: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,.08);
+            transition: all .2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-modern:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+        .btn-modern:active { transform: translateY(0) scale(.98); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .btn-modern:disabled, .btn-modern[disabled] { opacity: .45; transform: none; box-shadow: none; cursor: not-allowed; }
+
+        .btn-primary-modern { background: var(--primary); color: #fff; }
+        .btn-primary-modern:hover { background: #5558e6; color: #fff; }
+
+        .btn-outline-modern { background: #fff; color: var(--primary); border: 1.5px solid #c7d2fe; }
+        .btn-outline-modern:hover { background: #eef2ff; border-color: var(--primary); color: #4f46e5; }
+
+        .btn-danger-modern { background: #ef4444; color: #fff; }
+        .btn-danger-modern:hover { background: #dc2626; color: #fff; }
+
+        .btn-warning-modern { background: #f59e0b; color: #fff; }
+        .btn-warning-modern:hover { background: #d97706; color: #fff; }
+
+        /* ── Icon-Only Action Buttons (tabel) ────── */
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-size: .9rem;
+            border: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,.08);
+            transition: all .2s ease;
+            text-decoration: none;
+        }
+        .btn-action:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.12); }
+        .btn-action:active { transform: scale(.95); }
+
+        .btn-action-view   { background: #e0e7ff; color: #6366f1; }
+        .btn-action-view:hover   { background: #c7d2fe; color: #4f46e5; }
+        .btn-action-edit   { background: #dbeafe; color: #3b82f6; }
+        .btn-action-edit:hover   { background: #bfdbfe; color: #2563eb; }
+        .btn-action-delete { background: #fee2e2; color: #ef4444; }
+        .btn-action-delete:hover { background: #fecaca; color: #dc2626; }
 
         /* ── Sidebar Collapsed (Desktop) ──────────── */
         #sidebar.collapsed { width: 0; }

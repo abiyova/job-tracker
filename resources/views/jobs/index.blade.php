@@ -10,13 +10,13 @@
     <div class="d-flex gap-2 align-items-center">
         <form method="POST" action="{{ route('jobs.check-followup') }}" class="m-0">
             @csrf
-            <button type="submit" class="btn btn-outline-warning" title="Cek status otomatis (2-3 minggu)">
-                <i class="bi bi-arrow-repeat me-1"></i> Sinkronisasi Follow Up
+            <button type="submit" class="btn-modern btn-warning-modern" title="Cek status otomatis (2-3 minggu)">
+                <i class="bi bi-arrow-repeat"></i> Sinkronisasi Follow Up
             </button>
         </form>
         @if(($perPage === 'all' ? $jobs->count() : $jobs->total()) > 0)
-        <button type="button" class="btn btn-outline-danger m-0" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
-            <i class="bi bi-trash3 me-1"></i> Hapus Semua
+        <button type="button" class="btn-modern btn-danger-modern" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+            <i class="bi bi-trash3"></i> Hapus Semua
         </button>
         @endif
         @if($limitStatus['has_limit'])
@@ -25,12 +25,12 @@
             </span>
         @endif
         @if($limitStatus['can_add'])
-            <a href="{{ route('jobs.create') }}" class="btn btn-primary m-0">
-                <i class="bi bi-plus-lg me-1"></i> Tambah Lamaran
+            <a href="{{ route('jobs.create') }}" class="btn-modern btn-primary-modern">
+                <i class="bi bi-plus-lg"></i> Tambah Lamaran
             </a>
         @else
-            <button class="btn btn-secondary m-0" disabled title="Batas maksimal lamaran tercapai">
-                <i class="bi bi-plus-lg me-1"></i> Tambah Lamaran
+            <button class="btn-modern btn-primary-modern" disabled title="Batas maksimal lamaran tercapai">
+                <i class="bi bi-plus-lg"></i> Tambah Lamaran
             </button>
         @endif
     </div>
@@ -77,10 +77,10 @@
                 </select>
             </div>
             <div class="col-md-1 d-flex gap-2 align-items-end">
-                <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
+                <button type="submit" class="btn-modern btn-primary-modern flex-grow-1">Filter</button>
             </div>
             <div class="col-auto d-flex align-items-end">
-                <a href="{{ route('jobs.index') }}" class="btn btn-outline-secondary">Reset</a>
+                <a href="{{ route('jobs.index') }}" class="btn-modern btn-outline-modern">Reset</a>
             </div>
         </form>
     </div>
@@ -131,14 +131,16 @@
                             </span>
                         </td>
                         <td class="text-center">
-                        <div class="d-flex gap-1 justify-content-center">
+                        <div class="d-flex gap-2 justify-content-center">
                             <a href="{{ route('jobs.show', $job) }}"
-                            class="btn btn-sm btn-outline-secondary" title="Detail">
+                            class="btn-action btn-action-view" title="Detail"
+                            data-bs-toggle="tooltip">
                                 <i class="bi bi-eye"></i>
                             </a>
 
                             <a href="{{ route('jobs.edit', $job) }}"
-                            class="btn btn-sm btn-outline-primary" title="Edit">
+                            class="btn-action btn-action-edit" title="Edit"
+                            data-bs-toggle="tooltip">
                                 <i class="bi bi-pencil"></i>
                             </a>
 
@@ -149,8 +151,9 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="btn btn-sm btn-outline-danger"
-                                        title="Hapus">
+                                        class="btn-action btn-action-delete"
+                                        title="Hapus"
+                                        data-bs-toggle="tooltip">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -194,12 +197,12 @@
                 <input type="text" id="confirmDeleteInput" class="form-control" placeholder="Ketik HAPUS di sini..." autocomplete="off">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn-modern btn-outline-modern" data-bs-dismiss="modal">Batal</button>
                 <form method="POST" action="{{ route('jobs.destroy-all') }}" id="deleteAllForm">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
-                        <i class="bi bi-trash3 me-1"></i> Ya, Hapus Semua
+                    <button type="submit" class="btn-modern btn-danger-modern" id="confirmDeleteBtn" disabled>
+                        <i class="bi bi-trash3"></i> Ya, Hapus Semua
                     </button>
                 </form>
             </div>
@@ -223,6 +226,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (btn) { btn.disabled = true; }
         });
     }
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
 });
 </script>
 @endsection

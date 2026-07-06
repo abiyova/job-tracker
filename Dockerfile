@@ -1,6 +1,6 @@
-FROM richarvey/nginx-php-fpm:3.1.6
+FROM webdevops/php-nginx:8.2
 
-WORKDIR /var/www/html
+WORKDIR /app
 
 COPY . .
 
@@ -15,6 +15,6 @@ RUN php artisan key:generate --force
 
 RUN php artisan storage:link || true
 
-RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chown -R application:application storage bootstrap/cache
 
 EXPOSE 8080

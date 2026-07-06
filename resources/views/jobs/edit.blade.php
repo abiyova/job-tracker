@@ -83,10 +83,10 @@
             </div>
 
             <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save me-1"></i> Simpan Perubahan
+                <button type="submit" class="btn-modern btn-primary-modern">
+                    <i class="bi bi-save"></i> Simpan Perubahan
                 </button>
-                <a href="{{ route('jobs.index') }}" class="btn btn-outline-secondary">Batal</a>
+                <a href="{{ route('jobs.index') }}" class="btn-modern btn-outline-modern">Batal</a>
             </div>
         </form>
     </div>
