@@ -142,6 +142,34 @@ class JobController extends Controller
         return redirect()->route('jobs.show', $job)->with('success', 'Lamaran berhasil diperbarui!');
     }
 
+    public function updateStatus(Request $request, Job $job)
+    {
+        $this->authorize('update', $job);
+
+        $data = $request->validate([
+            'status' => 'required|in:'.implode(',', array_keys(Job::$statuses)),
+        ]);
+
+        $oldStatus = $job->status;
+        $job->update(['status' => $data['status']]);
+
+        if ($oldStatus !== $data['status']) {
+            StatusHistory::create([
+                'job_id'     => $job->id,
+                'old_status' => $oldStatus,
+                'new_status' => $data['status'],
+                'note'       => 'Diubah dari tabel data lamaran.',
+            ]);
+        }
+
+        return response()->json([
+            'success'        => true,
+            'new_status'     => $job->status,
+            'status_label'   => $job->status_label,
+            'status_badge'   => $job->status_badge,
+        ]);
+    }
+
     public function destroy(Job $job)
     {
         $this->authorize('delete', $job);

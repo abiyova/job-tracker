@@ -16,6 +16,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Job Tracker') — {{ config('app.name') }}</title>
 
     <!-- Bootstrap 5 -->
@@ -123,6 +124,50 @@
         .badge-diterima      { background: #20c997; }
         .badge-perlu_follow_up { background: #ffc107; color: #000; }
         .badge-tidak_direspon  { background: #6c757d; color: #fff; }
+
+        /* ── Badge Select (Inline Status Change) ──── */
+        .badge-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.25rem 1.75rem 0.25rem 0.625rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            background-repeat: no-repeat;
+            background-position: right 0.4rem center;
+            background-size: 0.7rem;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            transition: all 0.15s ease;
+            min-width: 110px;
+        }
+        .badge-select:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .badge-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99,102,241,0.4);
+        }
+        .badge-select option {
+            color: #333;
+            background: #fff;
+            padding: 0.5rem;
+        }
+        .badge-select-belum_dilamar { background-color: #6c757d; }
+        .badge-select-sudah_dilamar { background-color: #0d6efd; }
+        .badge-select-diproses      { background-color: #0dcaf0; color: #000; }
+        .badge-select-interview     { background-color: #ffc107; color: #000; }
+        .badge-select-tes           { background-color: #fd7e14; }
+        .badge-select-offering      { background-color: #198754; }
+        .badge-select-ditolak       { background-color: #dc3545; }
+        .badge-select-diterima      { background-color: #20c997; }
+        .badge-select-perlu_follow_up { background-color: #ffc107; color: #000; }
+        .badge-select-tidak_direspon  { background-color: #6c757d; color: #fff; }
 
         /* ── Modern Buttons ───────────────────────── */
         .btn-modern {

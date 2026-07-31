@@ -126,9 +126,16 @@
                         <td class="small">{{ $job->publish_date?->format('d M Y') ?? '-' }}</td>
                         <td class="small">{{ $job->apply_date?->format('d M Y') ?? '-' }}</td>
                         <td>
-                            <span class="badge badge-{{ $job->status }} px-2 py-1">
-                                {{ $job->status_label }}
-                            </span>
+                            <select class="badge-select badge-select-{{ $job->status }}"
+                                    data-job-id="{{ $job->id }}"
+                                    data-old-status="{{ $job->status }}"
+                                    data-old-label="{{ $job->status_label }}">
+                                @foreach($statuses as $key => $s)
+                                    <option value="{{ $key }}" {{ $job->status === $key ? 'selected' : '' }}>
+                                        {{ $s['label'] }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </td>
                         <td class="text-center">
                         <div class="d-flex gap-2 justify-content-center">
@@ -212,6 +219,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Delete All modal
     const input = document.getElementById('confirmDeleteInput');
     const btn = document.getElementById('confirmDeleteBtn');
     if (input && btn) {
@@ -227,9 +235,93 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.forEach(function (el) {
         new bootstrap.Tooltip(el);
+    });
+
+    // Status badge inline change
+    var statusLabels = @json(collect($statuses)->mapWithKeys(fn($s, $k) => [$k => $s['label']]));
+    var badgeClasses = @json(collect($statuses)->mapWithKeys(fn($s, $k) => [$k => $s['badge']]));
+
+    document.querySelectorAll('.badge-select').forEach(function (select) {
+        select.addEventListener('change', function () {
+            var jobId = this.dataset.jobId;
+            var oldStatus = this.dataset.oldStatus;
+            var oldLabel = this.dataset.oldLabel;
+            var newStatus = this.value;
+            var newLabel = statusLabels[newStatus] || newStatus;
+
+            if (oldStatus === newStatus) return;
+
+            var selectEl = this;
+
+            Swal.fire({
+                title: 'Ubah Status?',
+                html: 'Ubah status dari <strong class="text-capitalize">' + oldLabel + '</strong> ke <strong class="text-capitalize">' + newLabel + '</strong>?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="bi bi-check-lg me-1"></i> Ya, Ubah',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-4 border-0 shadow-lg',
+                    confirmButton: 'btn btn-primary px-4 py-2 mx-2 rounded-3',
+                    cancelButton: 'btn btn-light px-4 py-2 mx-2 rounded-3 border'
+                },
+                buttonsStyling: false
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    var csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+                        || document.querySelector('input[name="_token"]')?.value;
+
+                    fetch('{{ route("jobs.update-status", ":jobId") }}'.replace(':jobId', jobId), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ status: newStatus })
+                    })
+                    .then(function (response) { return response.json(); })
+                    .then(function (data) {
+                        if (data.success) {
+                            // Update select styling
+                            selectEl.classList.remove('badge-select-' + oldStatus);
+                            selectEl.classList.add('badge-select-' + data.new_status);
+                            selectEl.dataset.oldStatus = data.new_status;
+                            selectEl.dataset.oldLabel = data.status_label;
+
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Status berhasil diubah ke ' + data.status_label,
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                customClass: {
+                                    popup: 'rounded-4 border-0 shadow-lg'
+                                }
+                            });
+                        } else {
+                            // Revert select
+                            selectEl.value = oldStatus;
+                            Swal.fire('Gagal', data.message || 'Gagal mengubah status.', 'error');
+                        }
+                    })
+                    .catch(function () {
+                        // Revert select
+                        selectEl.value = oldStatus;
+                        Swal.fire('Error', 'Terjadi kesalahan jaringan.', 'error');
+                    });
+                } else {
+                    // User cancelled - revert
+                    this.value = oldStatus;
+                }
+            }.bind(this));
+        });
     });
 });
 </script>

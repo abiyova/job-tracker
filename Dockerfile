@@ -1,20 +1,54 @@
-FROM webdevops/php-nginx:8.2
+# =========================
+# Stage 1 - Build Frontend
+# =========================
+FROM node:20 AS frontend
 
 WORKDIR /app
 
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
+
+RUN npm run build
+
+# =========================
+# Stage 2 - Build Laravel
+# =========================
+FROM php:8.2-apache
+
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl \
+    libzip-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY . .
+
+COPY --from=frontend /app/public/build ./public/build
 
 RUN composer install --no-dev --optimize-autoloader
 
-RUN npm install
-RUN npm run build
+RUN mkdir -p storage/framework/{cache,sessions,views}
 
-RUN cp .env.example .env || true
+RUN chmod -R 777 storage bootstrap/cache
 
-RUN php artisan key:generate --force
+RUN a2enmod rewrite
 
-RUN php artisan storage:link || true
+COPY .docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
-RUN chown -R application:application storage bootstrap/cache
+EXPOSE 10000
 
-EXPOSE 8080
+CMD php artisan config:cache && \
+    php artisan route:cache && \
+    apache2-foreground

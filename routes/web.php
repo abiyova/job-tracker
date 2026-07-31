@@ -52,6 +52,7 @@ Route::middleware(['auth','force.change.password'])->group(function () {
 
         // Lamaran
         Route::resource('jobs', JobController::class);
+        Route::post('jobs/{job}/update-status', [JobController::class, 'updateStatus'])->name('jobs.update-status');
         Route::delete('jobs-destroy-all', [JobController::class, 'destroyAll'])->name('jobs.destroy-all');
         Route::post('jobs-check-followup', [JobController::class, 'checkFollowUp'])->name('jobs.check-followup');
 
