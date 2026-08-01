@@ -58,7 +58,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Handle onsubmit in forms
-            const deleteForms = document.querySelectorAll('form[onsubmit*="confirm"]');
+            const deleteForms = document.querySelectorAll('form[onsubmit*="confirm("]');
             deleteForms.forEach(form => {
                 const match = form.getAttribute('onsubmit').match(/confirm\('([^']+)'\)/);
                 const message = match ? match[1] : 'Apakah Anda yakin ingin melakukan tindakan ini?';
@@ -70,7 +70,7 @@
             });
 
             // Handle onclick in buttons or links
-            const confirmElements = document.querySelectorAll('[onclick*="confirm"]');
+            const confirmElements = document.querySelectorAll('[onclick*="confirm("]');
             confirmElements.forEach(el => {
                 const match = el.getAttribute('onclick').match(/confirm\('([^']+)'\)/);
                 const message = match ? match[1] : 'Apakah Anda yakin ingin melakukan tindakan ini?';

@@ -26,7 +26,7 @@
 
     <style>
         :root {
-            --sidebar-width: 260px;
+            --sidebar-width: 210px;
             --primary: #6366f1;
             --sidebar-bg: #1e2a3b;
             --sidebar-text: #a8b4c8;
@@ -100,7 +100,7 @@
             padding: .75rem 1.5rem;
             position: sticky;
             top: 0;
-            z-index: 99;
+            z-index: 90;
         }
 
         /* ── Cards ────────────────────────────────── */
@@ -229,6 +229,22 @@
         #sidebar.collapsed { width: 0; }
         #main-content.expanded { margin-left: 0; }
 
+        /* ── Sidebar Backdrop (Mobile) ───────────── */
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: transparent;
+            z-index: 99;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .sidebar-backdrop.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
         /* ── Responsive ───────────────────────────── */
         @media (max-width: 768px) {
             #sidebar { width: 0; }
@@ -244,6 +260,7 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- SIDEBAR                                         -->
 <!-- ═══════════════════════════════════════════════ -->
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
 <div id="sidebar">
     <div class="brand d-flex align-items-center gap-2">
         <i class="bi bi-briefcase-fill text-primary fs-5"></i>
@@ -364,19 +381,28 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
     // Sidebar toggle (Mobile & Desktop)
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    
     document.getElementById('sidebarToggle')?.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
-            document.getElementById('sidebar').classList.toggle('show');
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
         } else {
-            document.getElementById('sidebar').classList.toggle('collapsed');
+            sidebar.classList.toggle('collapsed');
             document.getElementById('main-content').classList.toggle('expanded');
         }
+    });
+
+    backdrop?.addEventListener('click', () => {
+        sidebar.classList.remove('show');
+        backdrop.classList.remove('show');
     });
 
     // Upgrade native confirm() to SweetAlert2 for all forms and elements
     document.addEventListener('DOMContentLoaded', function() {
         // Handle onsubmit in forms
-        const deleteForms = document.querySelectorAll('form[onsubmit*="confirm"]');
+        const deleteForms = document.querySelectorAll('form[onsubmit*="confirm("]');
         deleteForms.forEach(form => {
             const match = form.getAttribute('onsubmit').match(/confirm\('([^']+)'\)/);
             const message = match ? match[1] : 'Apakah Anda yakin ingin melakukan tindakan ini?';
@@ -388,7 +414,7 @@
         });
 
         // Handle onclick in buttons or links
-        const confirmElements = document.querySelectorAll('[onclick*="confirm"]');
+        const confirmElements = document.querySelectorAll('[onclick*="confirm("]');
         confirmElements.forEach(el => {
             const match = el.getAttribute('onclick').match(/confirm\('([^']+)'\)/);
             const message = match ? match[1] : 'Apakah Anda yakin ingin melakukan tindakan ini?';
