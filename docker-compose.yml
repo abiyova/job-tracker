@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+
+    container_name: jobtracker
+
+    restart: always
+
+    working_dir: /var/www
+
+    volumes:
+      - .:/var/www
+
+    ports:
+      - "8085:80" # Mengekspos port 80 (Apache) ke port 8000 di Host
+
+    networks:
+      - server-network
+
+networks:
+  server-network:
+    external: true
