@@ -156,7 +156,11 @@ function previewLetter() {
     placeholder.style.display = 'block';
     txtArea.style.display = 'none';
 
-    fetch('{{ route("letters.preview") }}?job_id=' + jobId + '&template_id=' + templateId)
+    var routeUrl = '{{ route("letters.preview") }}';
+    var parsedUrl = new URL(routeUrl, window.location.origin);
+    var previewUrl = window.location.origin + parsedUrl.pathname + '?job_id=' + jobId + '&template_id=' + templateId;
+
+    fetch(previewUrl)
         .then(response => {
             if (!response.ok) {
                 return response.json().then(data => { throw new Error(data.error || 'Terjadi kesalahan') });

@@ -276,7 +276,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     var csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
                         || document.querySelector('input[name="_token"]')?.value;
 
-                    fetch('{{ route("jobs.update-status", ":jobId") }}'.replace(':jobId', jobId), {
+                    var routeUrl = '{{ route("jobs.update-status", ":jobId") }}'.replace(':jobId', jobId);
+                    var parsedUrl = new URL(routeUrl, window.location.origin);
+                    var updateUrl = window.location.origin + parsedUrl.pathname + parsedUrl.search;
+
+                    fetch(updateUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
