@@ -3,53 +3,57 @@
 @section('breadcrumb', 'Lamaran / Daftar')
 
 @section('content')
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-    <h5 class="mb-0 fw-bold">
-        <i class="bi bi-file-earmark-text me-2 text-primary"></i>Data Lamaran
-    </h5>
-    <div class="d-flex flex-wrap gap-2 align-items-center">
-        <form method="POST" action="{{ route('jobs.check-followup') }}" class="m-0">
-            @csrf
-            <button type="submit" class="btn-modern btn-warning-modern btn-sm" title="Cek status otomatis (2-3 minggu)">
-                <i class="bi bi-arrow-repeat"></i> Sinkronisasi
+<div class="row align-items-center mb-4 gy-3">
+    <div class="col-12 col-md-auto">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-file-earmark-text me-2 text-primary"></i>Data Lamaran
+        </h5>
+    </div>
+    <div class="col-12 col-md-auto ms-md-auto">
+        <div class="d-flex flex-wrap gap-2">
+            <form method="POST" action="{{ route('jobs.check-followup') }}" class="m-0">
+                @csrf
+                <button type="submit" class="btn-modern btn-warning-modern" title="Cek status otomatis (2-3 minggu)">
+                    <i class="bi bi-arrow-repeat"></i> Sinkronisasi
+                </button>
+            </form>
+            @if(($perPage === 'all' ? $jobs->count() : $jobs->total()) > 0)
+            <button type="button" class="btn-modern btn-danger-modern" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+                <i class="bi bi-trash3"></i> Hapus
             </button>
-        </form>
-        @if(($perPage === 'all' ? $jobs->count() : $jobs->total()) > 0)
-        <button type="button" class="btn-modern btn-danger-modern btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
-            <i class="bi bi-trash3"></i> Hapus Semua
-        </button>
-        @endif
-        @if($limitStatus['has_limit'])
-            <span class="badge {{ $limitStatus['can_add'] ? 'bg-info' : 'bg-danger' }} px-3 py-2 border rounded-pill">
-                Limit: {{ $limitStatus['current'] }} / {{ $limitStatus['limit'] }}
-            </span>
-        @endif
-        @if($limitStatus['can_add'])
-            <a href="{{ route('jobs.create') }}" class="btn-modern btn-primary-modern btn-sm">
-                <i class="bi bi-plus-lg"></i> Tambah
-            </a>
-        @else
-            <button class="btn-modern btn-primary-modern btn-sm" disabled title="Batas maksimal lamaran tercapai">
-                <i class="bi bi-plus-lg"></i> Tambah
-            </button>
-        @endif
+            @endif
+            @if($limitStatus['has_limit'])
+                <span class="badge {{ $limitStatus['can_add'] ? 'bg-info' : 'bg-danger' }} fs-6 px-3 py-2 border">
+                    Limit: {{ $limitStatus['current'] }} / {{ $limitStatus['limit'] }}
+                </span>
+            @endif
+            @if($limitStatus['can_add'])
+                <a href="{{ route('jobs.create') }}" class="btn-modern btn-primary-modern">
+                    <i class="bi bi-plus-lg"></i> Tambah
+                </a>
+            @else
+                <button class="btn-modern btn-primary-modern" disabled title="Batas maksimal lamaran tercapai">
+                    <i class="bi bi-plus-lg"></i> Tambah
+                </button>
+            @endif
+        </div>
     </div>
 </div>
 
 {{-- Filter & Search --}}
-<div class="card mb-4 border-0 shadow-sm">
-    <div class="card-body p-3 p-md-4">
-        <form method="GET" action="{{ route('jobs.index') }}" class="row g-3 align-items-end">
-            <div class="col-12 col-md-4 col-lg-5">
-                <label class="form-label small text-muted fw-semibold mb-1">Pencarian</label>
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" action="{{ route('jobs.index') }}" class="row g-2 align-items-end">
+            <div class="col-12 col-md-4">
+                <label class="form-label small text-muted mb-1">Cari</label>
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control border-start-0 ps-0"
-                           placeholder="Perusahaan / Posisi..." value="{{ request('search') }}">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Perusahaan / posisi..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-6 col-md-3 col-lg-2">
-                <label class="form-label small text-muted fw-semibold mb-1">Status</label>
+            <div class="col-6 col-md-3">
+                <label class="form-label small text-muted mb-1">Status</label>
                 <select name="status" class="form-select">
                     <option value="">Semua Status</option>
                     @foreach($statuses as $key => $s)
@@ -59,15 +63,15 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-6 col-md-3 col-lg-2">
-                <label class="form-label small text-muted fw-semibold mb-1">Urutan</label>
+            <div class="col-6 col-md-2">
+                <label class="form-label small text-muted mb-1">Urutan</label>
                 <select name="dir" class="form-select">
                     <option value="desc" {{ request('dir')=='desc' ? 'selected' : '' }}>Terbaru (↓)</option>
                     <option value="asc"  {{ request('dir')=='asc'  ? 'selected' : '' }}>Terlama (↑)</option>
                 </select>
             </div>
-            <div class="col-6 col-md-2 col-lg-1">
-                <label class="form-label small text-muted fw-semibold mb-1">Per Hal</label>
+            <div class="col-4 col-md-1">
+                <label class="form-label small text-muted mb-1">Per Hal</label>
                 <select name="per_page" class="form-select">
                     <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
                     <option value="15" {{ request('per_page','15') == '15' ? 'selected' : '' }}>15</option>
@@ -76,72 +80,55 @@
                     <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>Semua</option>
                 </select>
             </div>
-            <div class="col-6 col-md-12 col-lg-2 d-flex gap-2 mt-3 mt-lg-0">
-                <button type="submit" class="btn-modern btn-primary-modern flex-grow-1 w-100">
-                    <i class="bi bi-funnel"></i> Filter
-                </button>
-                <a href="{{ route('jobs.index') }}" class="btn-modern btn-outline-modern" title="Reset Filter">
-                    <i class="bi bi-arrow-counterclockwise"></i>
-                </a>
+            <div class="col-8 col-md-2 d-flex gap-2">
+                <button type="submit" class="btn-modern btn-primary-modern flex-grow-1">Filter</button>
+                <a href="{{ route('jobs.index') }}" class="btn-modern btn-outline-modern">Reset</a>
             </div>
         </form>
     </div>
 </div>
 
 {{-- Table --}}
-<div class="card border-0 shadow-sm">
+<div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0 text-nowrap">
                 <thead class="table-light">
                     <tr>
-                        <th class="text-center" style="width: 5%">#</th>
-                        <th style="width: 25%">Perusahaan & Tautan</th>
-                        <th style="width: 25%">Posisi & Lokasi</th>
-                        <th style="width: 15%">Informasi</th>
-                        <th style="width: 15%">Status</th>
-                        <th class="text-center" style="width: 15%">Aksi</th>
+                        <th>#</th>
+                        <th>Perusahaan</th>
+                        <th>Posisi & Lokasi</th>
+                        <th>Sumber</th>
+                        <th>Tgl Publikasi</th>
+                        <th>Tgl Lamar</th>
+                        <th>Status</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($jobs as $i => $job)
+                                         
                     <tr>
-                        <td class="text-center text-muted small">
-                            {{ $perPage === 'all' ? $i + 1 : $jobs->firstItem() + $i }}
-                        </td>
+                        <td class="text-muted small">{{ $perPage === 'all' ? $i + 1 : $jobs->firstItem() + $i }}</td>
                         <td>
-                            <div class="fw-bold text-dark text-wrap" style="min-width: 150px; max-width: 250px;">{{ $job->company_name }}</div>
+                            <div class="fw-semibold">{{ $job->company_name }}</div>
                             @if($job->job_url)
-                                <a href="{{ $job->job_url }}" target="_blank" class="text-primary small text-decoration-none" title="Buka Link Loker">
-                                    <i class="bi bi-link-45deg"></i> Lihat Loker
+                                <a href="{{ $job->job_url }}" target="_blank" class="text-muted small">
+                                    <i class="bi bi-link-45deg"></i> Link Loker
                                 </a>
-                            @else
-                                <span class="text-muted small">-</span>
                             @endif
                         </td>
                         <td>
-                            <div class="fw-semibold text-wrap" style="min-width: 150px; max-width: 250px;">{{ $job->position }}</div>
-                            <div class="small text-muted text-wrap">
-                                @if($job->location)
-                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ $job->location }}
-                                @else
-                                    <i class="bi bi-geo-alt me-1"></i>-
-                                @endif
-                            </div>
+                            <div class="fw-medium">{{ $job->position }}</div>
+                            @if($job->location)
+                                <div class="small text-muted"><i class="bi bi-geo-alt me-1"></i>{{ $job->location }}</div>
+                            @endif
                         </td>
+                        <td><span class="text-muted">{{ $job->source ?? '-' }}</span></td>
+                        <td class="small">{{ $job->publish_date?->format('d M Y') ?? '-' }}</td>
+                        <td class="small">{{ $job->apply_date?->format('d M Y') ?? '-' }}</td>
                         <td>
-                            <div class="small mb-1">
-                                <span class="text-muted"><i class="bi bi-box-arrow-in-right me-1"></i>Sumber:</span> 
-                                <span class="fw-medium text-wrap">{{ $job->source ?? '-' }}</span>
-                            </div>
-                            <div class="small">
-                                <span class="text-muted"><i class="bi bi-calendar-event me-1"></i>Lamar:</span> 
-                                <span class="fw-medium">{{ $job->apply_date?->format('d M Y') ?? '-' }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <select class="badge-select badge-select-{{ $job->status }} shadow-sm rounded-pill px-3 py-1 fw-semibold"
-                                    style="width: auto; cursor: pointer;"
+                            <select class="badge-select badge-select-{{ $job->status }}"
                                     data-job-id="{{ $job->id }}"
                                     data-old-status="{{ $job->status }}"
                                     data-old-label="{{ $job->status_label }}">
@@ -153,43 +140,40 @@
                             </select>
                         </td>
                         <td class="text-center">
-                            <div class="d-flex gap-2 justify-content-center">
-                                <a href="{{ route('jobs.show', $job) }}"
-                                class="btn btn-sm btn-light text-primary border" title="Detail"
-                                data-bs-toggle="tooltip">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a href="{{ route('jobs.show', $job) }}"
+                            class="btn-action btn-action-view" title="Detail"
+                            data-bs-toggle="tooltip">
+                                <i class="bi bi-eye"></i>
+                            </a>
 
-                                <a href="{{ route('jobs.edit', $job) }}"
-                                class="btn btn-sm btn-light text-warning border" title="Edit"
-                                data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+                            <a href="{{ route('jobs.edit', $job) }}"
+                            class="btn-action btn-action-edit" title="Edit"
+                            data-bs-toggle="tooltip">
+                                <i class="bi bi-pencil"></i>
+                            </a>
 
-                                <form method="POST"
-                                    action="{{ route('jobs.destroy', $job) }}"
-                                    class="m-0"
-                                    onsubmit="return confirm('Hapus lamaran ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="btn btn-sm btn-light text-danger border"
-                                            title="Hapus"
-                                            data-bs-toggle="tooltip">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                            <form method="POST"
+                                action="{{ route('jobs.destroy', $job) }}"
+                                class="m-0"
+                                onsubmit="return confirm('Hapus lamaran ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="btn-action btn-action-delete"
+                                        title="Hapus"
+                                        data-bs-toggle="tooltip">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-5">
-                            <div class="text-muted d-flex flex-column align-items-center">
-                                <i class="bi bi-inbox text-secondary opacity-50 mb-3" style="font-size: 3rem;"></i>
-                                <h6 class="fw-semibold">Belum ada data lamaran</h6>
-                                <p class="small mb-0">Data lamaran yang Anda tambahkan akan muncul di sini.</p>
-                            </div>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                            Tidak ada data lamaran.
                         </td>
                     </tr>
                     @endforelse
