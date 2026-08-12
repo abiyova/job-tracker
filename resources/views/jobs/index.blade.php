@@ -92,12 +92,12 @@
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 text-nowrap">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
                         <th>Perusahaan</th>
-                        <th>Posisi & Lokasi</th>
+                        <th style="min-width: 180px;">Posisi & Lokasi</th>
                         <th>Sumber</th>
                         <th>Tgl Publikasi</th>
                         <th>Tgl Lamar</th>
@@ -110,7 +110,7 @@
                                          
                     <tr>
                         <td class="text-muted small">{{ $perPage === 'all' ? $i + 1 : $jobs->firstItem() + $i }}</td>
-                        <td>
+                        <td class="text-nowrap">
                             <div class="fw-semibold">{{ $job->company_name }}</div>
                             @if($job->job_url)
                                 <a href="{{ $job->job_url }}" target="_blank" class="text-muted small">
@@ -118,16 +118,16 @@
                                 </a>
                             @endif
                         </td>
-                        <td>
+                        <td style="white-space: normal; max-width: 260px;">
                             <div class="fw-medium">{{ $job->position }}</div>
                             @if($job->location)
                                 <div class="small text-muted"><i class="bi bi-geo-alt me-1"></i>{{ $job->location }}</div>
                             @endif
                         </td>
-                        <td><span class="text-muted">{{ $job->source ?? '-' }}</span></td>
-                        <td class="small">{{ $job->publish_date?->format('d M Y') ?? '-' }}</td>
-                        <td class="small">{{ $job->apply_date?->format('d M Y') ?? '-' }}</td>
-                        <td>
+                        <td class="text-nowrap"><span class="text-muted">{{ $job->source ?? '-' }}</span></td>
+                        <td class="small text-nowrap">{{ $job->publish_date?->format('d M Y') ?? '-' }}</td>
+                        <td class="small text-nowrap">{{ $job->apply_date?->format('d M Y') ?? '-' }}</td>
+                        <td class="text-nowrap">
                             <select class="badge-select badge-select-{{ $job->status }}"
                                     data-job-id="{{ $job->id }}"
                                     data-old-status="{{ $job->status }}"
