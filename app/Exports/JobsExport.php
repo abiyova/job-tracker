@@ -15,12 +15,18 @@ class JobsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
         if (!empty($this->filters['status'])) {
             $q->where('status', $this->filters['status']);
         }
+        if (!empty($this->filters['start_date'])) {
+            $q->whereDate('created_at', '>=', $this->filters['start_date']);
+        }
+        if (!empty($this->filters['end_date'])) {
+            $q->whereDate('created_at', '<=', $this->filters['end_date']);
+        }
         return $q->orderByDesc('created_at');
     }
 
     public function headings(): array
     {
-        return ['ID','Perusahaan','Posisi','Lokasi','Sumber','URL Loker',
+        return ['ID','Perusahaan','Posisi','Lokasi','URL Loker',
                 'Tgl Publikasi','Tgl Melamar','Status','Catatan','Dibuat'];
     }
 
@@ -31,7 +37,6 @@ class JobsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
             $job->company_name,
             $job->position,
             $job->location,
-            $job->source,
             $job->job_url,
             $job->publish_date?->format('Y-m-d'),
             $job->apply_date?->format('Y-m-d'),

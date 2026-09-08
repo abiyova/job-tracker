@@ -380,6 +380,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
+    // Auto close alerts after 4 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.alert.alert-dismissible').forEach(alertNode => {
+            const bsAlert = new bootstrap.Alert(alertNode);
+            bsAlert.close();
+        });
+    }, 4000);
+
     // Sidebar toggle (Mobile & Desktop)
     const sidebar = document.getElementById('sidebar');
     const backdrop = document.getElementById('sidebarBackdrop');
